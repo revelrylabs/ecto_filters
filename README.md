@@ -1,16 +1,13 @@
 # EctoFilters
 
-**TODO: Add description**
+Provides a consistent way to transform request params into ecto query expressions.
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ecto_filters` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:ecto_filters, "~> 0.1.0"}
+    {:ecto_filters, github: "revelrylabs/ecto_filters"}
   ]
 end
 ```
@@ -23,11 +20,9 @@ defmodule Posts do
   alias MyProject.{Post, Repo}
 
   def filter({:comment_body, value}, query) do
-    from(
-      posts in query,
-      join: comments in assoc(posts, :comments),
-      where: ilike(comments.body, ^value)
-    )
+    query
+    |> join(:left, [p], c in assoc(p, :comments), as: :comments)
+    |> where([comments: comments], ilike(comments.body, ^value))
   end
 
   @doc """

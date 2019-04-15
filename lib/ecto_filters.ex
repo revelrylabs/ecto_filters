@@ -1,5 +1,16 @@
 defmodule EctoFilters do
-  import Ecto.{Query}, warn: false
+  @moduledoc """
+  Adds function to transform request params into ecto query expressions.
+  """
+
+  @doc """
+
+  ## Examples
+
+      iex> apply_filters(Post, %{"q" => %{"title" => "Ecto Filters"}}) |> MyRepo.all()
+      [%Post{title: "Ecto Filters"}, ...]
+  """
+  @callback apply_filters(queryable :: Ecto.Queryable.t(), params :: %{}) :: Ecto.Queryable.t()
 
   defmacro __using__(opts) do
     add_defaults = Keyword.get(opts, :add_defaults, true)
