@@ -22,9 +22,11 @@ defmodule EctoFiltersTest.WithFilters do
   defp query, do: from(post in Post)
 
   def filter({:comment_body, value}, query) do
-    query
-    |> join(:left, [post], comment in assoc(post, :comments))
-    |> where([_post, comment], ilike(comment.body, ^value))
+    from(
+      posts in query,
+      join: comments in assoc(posts, :comments),
+      where: ilike(comments.body, ^value)
+    )
   end
 
 
