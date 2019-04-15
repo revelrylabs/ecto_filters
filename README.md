@@ -17,7 +17,7 @@ end
 
 ## Usage
 
-```
+```elixir
 defmodule Posts do
   use EctoFilters
   alias MyProject.{Post, Repo}
@@ -28,6 +28,15 @@ defmodule Posts do
     |> where([_post, comment], ilike(comment.body, ^value))
   end
 
+  @doc """
+  Returns the list of posts
+
+  ## Examples
+
+      iex> list_posts(%{"q" => %{"comment_body" => "ecto_filters"}})
+      [%Post{}, ...]
+
+  """
   def list_posts(params) do
     Post
     |> apply_filters(params)
