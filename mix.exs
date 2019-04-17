@@ -9,6 +9,7 @@ defmodule EctoFilters.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
+      description: description(),
       name: "Ecto Filters",
       source_url: "https://github.com/revelrylabs/ecto_filters",
       homepage_url: "https://github.com/revelrylabs/ecto_filters",
@@ -23,11 +24,15 @@ defmodule EctoFilters.MixProject do
     ]
   end
 
+  defp description do
+    "Adds function to transform request params into ecto query expressions."
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:ecto_sql, "~> 3.1.1"},
-      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
