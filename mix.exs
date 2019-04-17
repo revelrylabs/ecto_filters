@@ -7,7 +7,12 @@ defmodule EctoFilters.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      name: "Ecto Filters",
+      source_url: "https://github.com/revelrylabs/ecto_filters",
+      homepage_url: "https://github.com/revelrylabs/ecto_filters",
+      docs: [extras: ["README.md"]]
     ]
   end
 
@@ -23,6 +28,18 @@ defmodule EctoFilters.MixProject do
     [
       {:ecto_sql, "~> 3.0-rc"},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README.md", "LICENSE", "CHANGELOG.md"],
+      maintainers: ["Revelry Labs"],
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/revelrylabs/ecto_filters"
+      },
+      build_tools: ["mix"]
     ]
   end
 end
