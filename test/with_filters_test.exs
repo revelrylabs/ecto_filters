@@ -8,7 +8,7 @@ defmodule EctoFiltersTest.WithFilters do
     use Ecto.Schema
 
     schema "post" do
-      field(:name, :utc_datetime)
+      field(:name, :string)
       has_many(:comments, Comment)
     end
   end
@@ -29,10 +29,17 @@ defmodule EctoFiltersTest.WithFilters do
     |> where([comments: comments], ilike(comments.body, ^value))
   end
 
+  def filter({:name, value}, query), do: where(query, name: ^value)
+
   describe "apply_filters" do
     test "with comment body filter" do
       query = apply_filters(query(), %{"q" => %{"comment_body" => "some words"}})
       assert [%Ecto.Query.BooleanExpr{params: [{"some words", :string}]}] = query.wheres
+    end
+
+    test "name when add_defaults is false" do
+      query = apply_filters(query(), %{"q" => %{"name" => "post name"}})
+      assert [%Ecto.Query.BooleanExpr{params: [{"post name", {0, :name}}]}] = query.wheres
     end
   end
 end
