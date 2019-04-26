@@ -4,6 +4,9 @@ defmodule EctoFilters do
   """
 
   @doc """
+  Applies filters to a queryable. Accepts a `Ecto.Queryable` and a map of with
+  the `"q"` string key and returns a `Ecto.Queryable`.
+
 
   ## Examples
 

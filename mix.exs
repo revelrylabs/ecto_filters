@@ -13,7 +13,7 @@ defmodule EctoFilters.MixProject do
       name: "Ecto Filters",
       source_url: "https://github.com/revelrylabs/ecto_filters",
       homepage_url: "https://github.com/revelrylabs/ecto_filters",
-      docs: [extras: ["README.md"]]
+      docs: [main: "readme", extras: ["README.md"]]
     ]
   end
 
