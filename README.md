@@ -7,7 +7,7 @@ Provides a consistent way to transform request params into ecto query expression
 ```elixir
 def deps do
   [
-    {:ecto_filters, github: "revelrylabs/ecto_filters"}
+    {:ecto_filters, "~> 0.1.1"}
   ]
 end
 ```
