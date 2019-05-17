@@ -32,7 +32,8 @@ defmodule EctoFilters.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.1.1", only: [:test]},
-      {:ex_doc, ">= 0.0.0", only: [:dev, :test]}
+      {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
+      {:mix_test_watch, "~> 0.8", only: [:test], runtime: false}
     ]
   end
 

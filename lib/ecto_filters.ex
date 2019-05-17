@@ -4,8 +4,8 @@ defmodule EctoFilters do
   """
 
   @doc """
-  Applies filters to a queryable. Accepts a `Ecto.Queryable` and a map of with
-  the `"q"` string key and returns a `Ecto.Queryable`.
+  Applies filters to a queryable. Accepts an `Ecto.Queryable` and a map of with
+  the `"q"` string key and returns an `Ecto.Queryable`.
 
 
   ## Examples
@@ -13,32 +13,20 @@ defmodule EctoFilters do
       iex> apply_filters(Post, %{"q" => %{"title" => "Ecto Filters"}}) |> MyRepo.all()
       [%Post{title: "Ecto Filters"}, ...]
   """
-  @callback apply_filters(queryable :: Ecto.Queryable.t(), params :: %{}) :: Ecto.Queryable.t()
 
   defmacro __using__(opts) do
     add_defaults = Keyword.get(opts, :add_defaults, true)
 
-    quote do
+    quote location: :keep do
       Module.put_attribute(__MODULE__, :add_defaults, unquote(add_defaults))
 
-      defp apply_filters(original_query, params) do
+      @spec apply_filters(queryable :: Ecto.Queryable.t(), params :: %{}) :: Ecto.Queryable.t()
+      defp apply_filters(query, params) do
         filters = create_filters(params)
-        query = maybe_execute_filters(filters, original_query)
-        if @add_defaults do
-          maybe_apply_defaults(query, original_query, filters)
-        else
-          query
-        end
-      end
 
-      defp maybe_execute_filters(filters, query) do
-        Enum.reduce(filters, query, fn {key, value}, query ->
-          try do
-            apply(__MODULE__, :filter, [{key, value}, query])
-          rescue
-            _ -> query
-          end
-        end)
+        filters
+        |> Enum.reduce(query, &filter/2)
+        |> maybe_apply_defaults(query, filters)
       end
 
       defp maybe_apply_defaults(query, original_query, filters) when query == original_query,
@@ -94,6 +82,10 @@ defmodule EctoFilters do
       end
 
       defp defaults(_, query), do: query
+
+      defp filter(_, query), do: query
+
+      defoverridable [filter: 2]
     end
   end
 end
