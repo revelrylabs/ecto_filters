@@ -4,7 +4,7 @@ defmodule EctoFilters.MixProject do
   def project do
     [
       app: :ecto_filters,
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -33,7 +33,7 @@ defmodule EctoFilters.MixProject do
     [
       {:ecto_sql, "~> 3.1.1", only: [:test]},
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
-      {:mix_test_watch, "~> 0.8", only: [:test], runtime: false}
+      {:mix_test_watch, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
 

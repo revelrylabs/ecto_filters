@@ -20,13 +20,25 @@ defmodule EctoFilters do
     quote location: :keep do
       Module.put_attribute(__MODULE__, :add_defaults, unquote(add_defaults))
 
-      @spec apply_filters(queryable :: Ecto.Queryable.t(), params :: %{}) :: Ecto.Queryable.t()
-      defp apply_filters(query, params) do
+      defp apply_filters(original_query, params) do
         filters = create_filters(params)
 
-        filters
-        |> Enum.reduce(query, &filter/2)
-        |> maybe_apply_defaults(query, filters)
+        query = maybe_execute_filters(filters, original_query)
+        if @add_defaults do
+          maybe_apply_defaults(query, original_query, filters)
+        else
+          query
+        end
+      end
+
+      defp maybe_execute_filters(filters, query) do
+        Enum.reduce(filters, query, fn {key, value}, query ->
+          try do
+            apply(__MODULE__, :filter, [{key, value}, query])
+          rescue
+            _ -> query
+          end
+        end)
       end
 
       defp maybe_apply_defaults(query, original_query, filters) when query == original_query,
@@ -82,10 +94,6 @@ defmodule EctoFilters do
       end
 
       defp defaults(_, query), do: query
-
-      defp filter(_, query), do: query
-
-      defoverridable [filter: 2]
     end
   end
 end
