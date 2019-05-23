@@ -1,4 +1,4 @@
-# EctoFilters
+# Ecto.Filters
 
 Provides a consistent way to transform request params into ecto query expressions.
 
@@ -16,14 +16,14 @@ end
 
 ```elixir
 defmodule Posts do
-  use EctoFilters
+  use Ecto.Filters
   alias MyProject.{Post, Repo}
 
-  def filter({:comment_body, value}, query) do
+  add_filter(:comment_body, fn value, query -> 
     query
     |> join(:left, [p], c in assoc(p, :comments), as: :comments)
     |> where([comments: comments], ilike(comments.body, ^value))
-  end
+  end)
 
   @doc """
   Returns the list of posts

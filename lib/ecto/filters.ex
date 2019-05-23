@@ -1,23 +1,33 @@
-defmodule EctoFilters do
+defmodule Ecto.Filters do
   @moduledoc """
-  Adds function to transform request params into ecto query expressions.
-  """
+  Adds a macro `add_filter` and private function `apply_filter/2` to transform
+  request params into ecto query expressions.
 
-  @doc """
-  Applies filters to a queryable. Accepts an `Ecto.Queryable` and a map of with
-  the `"q"` string key and returns an `Ecto.Queryable`.
+  ## Example
 
+      add_filter(:comment_body, fn value, query ->
+        query
+        |> join(:left, [p], c in assoc(p, :comments), as: :comments)
+        |> where([comments: comments], ilike(comments.body, ^value))
+      end)
 
-  ## Examples
-
-      iex> apply_filters(Post, %{"q" => %{"title" => "Ecto Filters"}}) |> MyRepo.all()
+      apply_filters(Post, %{"q" => %{"comment_body" => "some text"}}) |> MyRepo.all()
       [%Post{title: "Ecto Filters"}, ...]
   """
+  defmacro add_filter(key, fun) do
+    quote do
+      def filter({unquote(key), value}, query) do
+        unquote(fun).(value, query)
+      end
+    end
+  end
+
 
   defmacro __using__(opts) do
     add_defaults = Keyword.get(opts, :add_defaults, true)
 
     quote location: :keep do
+      import Ecto.Filters
       Module.put_attribute(__MODULE__, :add_defaults, unquote(add_defaults))
 
       defp apply_filters(original_query, params) do

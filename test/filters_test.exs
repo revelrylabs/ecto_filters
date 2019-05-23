@@ -17,7 +17,7 @@ end
 
 defmodule Posts.WithoutFilters do
   import Ecto.Query, warn: false
-  use EctoFilters
+  use Ecto.Filters
 
   def query(params \\ %{}) do
     query = from(post in Post)
@@ -27,21 +27,21 @@ end
 
 defmodule Posts.WithFilters do
   import Ecto.Query, warn: false
-  use EctoFilters, add_defaults: false
+  use Ecto.Filters, add_defaults: false
 
   def query(params \\ %{}) do
     query = from(post in Post)
     apply_filters(query, params)
   end
 
-  def filter({:comment_body, value}, query) do
+  add_filter(:comment_body, fn value, query ->
     query
     |> join(:left, [p], c in assoc(p, :comments), as: :comments)
     |> where([comments: comments], ilike(comments.body, ^value))
-  end
+  end)
 end
 
-defmodule EctoFiltersTest.WithoutFilters do
+defmodule Ecto.FiltersTest.WithoutFilters do
   use ExUnit.Case
 
   describe "apply_filters without filters" do

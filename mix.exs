@@ -1,10 +1,10 @@
-defmodule EctoFilters.MixProject do
+defmodule Ecto.Filters.MixProject do
   use Mix.Project
 
   def project do
     [
       app: :ecto_filters,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
