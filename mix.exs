@@ -4,7 +4,7 @@ defmodule Ecto.Filters.MixProject do
   def project do
     [
       app: :ecto_filters,
-      version: "0.1.3",
+      version: "0.2.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),

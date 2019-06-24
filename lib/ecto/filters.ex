@@ -80,14 +80,19 @@ defmodule Ecto.Filters do
         end)
       end
 
-      defp create_filters(%{"q" => parameters}) do
-        parameters
+      defp create_filters(%{"q" => q}), do: create_filters(q)
+      defp create_filters(%{q: q}), do: create_filters(q)
+
+      defp create_filters(params) do
+        params
+        |> maybe_get_from_keywords()
         |> filter_parameters()
         |> condition_bools()
         |> convert_string_keys()
       end
 
-      defp create_filters(_), do: []
+      def maybe_get_from_keywords(params) when is_list(params), do: Keyword.get(params, :q, params)
+      def maybe_get_from_keywords(params), do: params
 
       defp defaults({key, value}, query) do
         source = elem(query.from.source, 1)

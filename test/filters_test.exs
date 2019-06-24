@@ -56,7 +56,7 @@ defmodule Ecto.FiltersTest.WithoutFilters do
   end
 
   describe "apply_filters with filters declared" do
-    test "with comment body filter" do
+    test "with comment_body filter" do
       query = Posts.WithFilters.query(%{"q" => %{"comment_body" => "some words"}})
       assert [%Ecto.Query.BooleanExpr{params: [{"some words", :string}]}] = query.wheres
     end
@@ -64,6 +64,21 @@ defmodule Ecto.FiltersTest.WithoutFilters do
     test "name when add_defaults is false" do
       query = Posts.WithFilters.query(%{"q" => %{"name" => "post name"}})
       assert [] == query.wheres
+    end
+
+    test "using with keyword lists" do
+      query = Posts.WithFilters.query(q: [comment_body: "some words"], other_opts: true)
+      assert [%Ecto.Query.BooleanExpr{params: [{"some words", :string}]}] = query.wheres
+    end
+
+    test "using with atomized map" do
+      query = Posts.WithFilters.query(%{q: %{comment_body: "some words"}})
+      assert [%Ecto.Query.BooleanExpr{params: [{"some words", :string}]}] = query.wheres
+    end
+
+    test "using with atomized map of keyword lists" do
+      query = Posts.WithFilters.query(%{q: [comment_body: "some words"]})
+      assert [%Ecto.Query.BooleanExpr{params: [{"some words", :string}]}] = query.wheres
     end
   end
 end
