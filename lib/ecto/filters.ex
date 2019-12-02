@@ -26,7 +26,7 @@ defmodule Ecto.Filters do
   defmacro __using__(opts) do
     add_defaults = Keyword.get(opts, :add_defaults, true)
 
-    quote location: :keep do
+    quote do
       import Ecto.Filters
       Module.put_attribute(__MODULE__, :add_defaults, unquote(add_defaults))
 
@@ -75,7 +75,13 @@ defmodule Ecto.Filters do
 
       defp convert_string_keys(filters) do
         Enum.map(filters, fn
-          {key, value} when is_binary(key) -> {String.to_existing_atom(key), value}
+          {key, value} when is_binary(key) ->
+            try do
+              {String.to_existing_atom(key), value}
+            rescue
+              _ ->
+                {:error, "Atom doesn't exist."}
+            end
           {key, value} -> {key, value}
         end)
       end
