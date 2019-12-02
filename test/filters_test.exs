@@ -53,6 +53,15 @@ defmodule Ecto.FiltersTest.WithoutFilters do
       query = Posts.WithoutFilters.query(%{"q" => %{"name" => "Joe"}})
       assert [%Ecto.Query.BooleanExpr{params: [{"Joe", {0, :name}}]}] = query.wheres
     end
+
+    test "doesn't raise exception when the atom doesn't exist" do
+      try do
+        Posts.WithoutFilters.query(%{"q" => %{"apple" => true}})
+      rescue
+        _ -> refute true
+      end
+      assert true
+    end
   end
 
   describe "apply_filters with filters declared" do

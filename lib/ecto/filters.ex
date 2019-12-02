@@ -22,7 +22,6 @@ defmodule Ecto.Filters do
     end
   end
 
-
   defmacro __using__(opts) do
     add_defaults = Keyword.get(opts, :add_defaults, true)
 
