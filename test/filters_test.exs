@@ -17,7 +17,7 @@ end
 
 defmodule Posts.WithoutFilters do
   import Ecto.Query, warn: false
-  use Ecto.Filters
+  use Ecto.Filters, key: :search
 
   def query(params \\ %{}) do
     query = from(post in Post)
@@ -50,13 +50,13 @@ defmodule Ecto.FiltersTest.WithoutFilters do
     end
 
     test "with name filter" do
-      query = Posts.WithoutFilters.query(%{"q" => %{"name" => "Joe"}})
+      query = Posts.WithoutFilters.query(%{"search" => %{"name" => "Joe"}})
       assert [%Ecto.Query.BooleanExpr{params: [{"Joe", {0, :name}}]}] = query.wheres
     end
 
     test "doesn't raise exception when the atom doesn't exist" do
       try do
-        Posts.WithoutFilters.query(%{"q" => %{"apple" => true}})
+        Posts.WithoutFilters.query(%{"search" => %{"apple" => true}})
       rescue
         _ -> refute true
       end

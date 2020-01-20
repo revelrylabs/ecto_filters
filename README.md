@@ -16,7 +16,7 @@ end
 
 ```elixir
 defmodule Posts do
-  use Ecto.Filters
+  use Ecto.Filters, key: :search
   alias MyProject.{Post, Repo}
 
   add_filter(:comment_body, fn value, query -> 
@@ -30,7 +30,13 @@ defmodule Posts do
 
   ## Examples
 
-      iex> list_posts(%{"q" => %{"comment_body" => "ecto_filters"}})
+      iex> list_posts(%{"search" => %{"comment_body" => "ecto_filters"}})
+      [%Post{}, ...]
+      
+      iex> list_posts(%{search: %{comment_body: "ecto_filters"}})
+      [%Post{}, ...]
+
+      iex> list_posts(search: [comment_body: "ecto_filters"])
       [%Post{}, ...]
 
   """

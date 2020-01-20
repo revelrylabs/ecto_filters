@@ -4,6 +4,7 @@ defmodule Ecto.Filters do
   request params into ecto query expressions.
 
   ## Example
+      use Ecto.Filters
 
       add_filter(:comment_body, fn value, query ->
         query
@@ -13,6 +14,10 @@ defmodule Ecto.Filters do
 
       apply_filters(Post, %{"q" => %{"comment_body" => "some text"}}) |> MyRepo.all()
       [%Post{title: "Ecto Filters"}, ...]
+
+  ## Configure the Search Key
+
+  By default Ecto.Filters looks for `:q` as the filter parameter key. This can be set by `use Ecto.Filters, key: :search`.
   """
   defmacro add_filter(key, fun) do
     quote do
@@ -24,10 +29,12 @@ defmodule Ecto.Filters do
 
   defmacro __using__(opts) do
     add_defaults = Keyword.get(opts, :add_defaults, true)
+    key = Keyword.get(opts, :key, :q)
 
     quote do
       import Ecto.Filters
       Module.put_attribute(__MODULE__, :add_defaults, unquote(add_defaults))
+      Module.put_attribute(__MODULE__, :key, unquote(key))
 
       defp apply_filters(original_query, params) do
         filters = create_filters(params)
@@ -85,19 +92,22 @@ defmodule Ecto.Filters do
         end)
       end
 
-      defp create_filters(%{"q" => q}), do: create_filters(q)
-      defp create_filters(%{q: q}), do: create_filters(q)
-
       defp create_filters(params) do
         params
-        |> maybe_get_from_keywords()
+        |> get_filter_params()
         |> filter_parameters()
         |> condition_bools()
         |> convert_string_keys()
       end
 
-      def maybe_get_from_keywords(params) when is_list(params), do: Keyword.get(params, :q, params)
-      def maybe_get_from_keywords(params), do: params
+      defp get_filter_params(params) do
+        cond do
+          is_list(params) and Keyword.has_key?(params, @key) -> Keyword.get(params, @key)
+          is_map(params) and Map.has_key?(params, @key) -> Map.get(params, @key)
+          is_map(params) and Map.has_key?(params, Atom.to_string(@key)) -> Map.get(params, Atom.to_string(@key))
+          true -> params
+        end
+      end
 
       defp defaults({key, value}, query) do
         source = elem(query.from.source, 1)
