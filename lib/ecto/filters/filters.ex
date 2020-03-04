@@ -25,18 +25,12 @@ defmodule Ecto.Filters do
   defmacro filter(key, fun) do
     quote line: __CALLER__.line do
       def filter_by(query, unquote(key), value) do
-        args = [key: unquote(key), value: value, query: query]
-
-        cond do
-          !is_atom(unquote(key)) ->
-            raise Exception, type: :atom_key, args: args
-
-          query.__struct__ != Ecto.Query ->
-            raise Exception, type: :ecto_query, args: args
-
-          true ->
-            unquote(fun).(query, value)
+        if !is_atom(unquote(key)) do
+          args = [key: unquote(key), value: value, query: query]
+          raise Exception, type: :atom_key, args: args
         end
+
+        unquote(fun).(query, value)
       end
     end
   end
