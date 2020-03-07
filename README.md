@@ -19,7 +19,7 @@ defmodule Posts do
   use Ecto.Filters
   alias MyProject.{Post, Repo}
 
-  filter(:comment_body, fn value, query ->
+  filter(:comment_body, fn query, value ->
     query
     |> join(:left, [p], c in assoc(p, :comments), as: :comments)
     |> where([comments: comments], ilike(comments.body, ^value))
