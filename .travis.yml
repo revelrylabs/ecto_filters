@@ -14,7 +14,6 @@ install:
   - mix deps.get
 script:
   - mix test --trace
-  - MIX_ENV=test mix coveralls.json
   - mix credo --strict
   - mix format --check-formatted
 before_deploy:
