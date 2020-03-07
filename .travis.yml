@@ -1,0 +1,27 @@
+sudo: false
+language: elixir
+elixir:
+  - 1.8
+otp_release:
+  - 21.2
+cache:
+  directories:
+    - _build
+    - deps
+install:
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix deps.get
+script:
+  - mix test --trace
+  - MIX_ENV=test mix coveralls.json
+  - mix credo --strict
+  - mix format --check-formatted
+before_deploy:
+  - mix compile
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: mix hex.publish --yes
+  on:
+    tags: true
