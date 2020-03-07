@@ -17,6 +17,10 @@ defmodule Ecto.Filters.Exception do
     "`key` must be an atom. Got #{inspect(args)}"
   end
 
+  defp message(:atom_or_binary_key, args) do
+    "Filter keys must be a binary or atom. Arguments supplied #{inspect(args)}"
+  end
+
   defp message(:not_found, args) do
     "Could not find a filter defined to match arguments. Arguments supplied #{inspect(args)}"
   end

@@ -21,6 +21,7 @@ defmodule Ecto.FiltersTest do
     end
   end
 
+
   filter(:title, &where(&1, title: ^&2))
   filter(:comment_body, fn query, value ->
     query
@@ -63,6 +64,7 @@ defmodule Ecto.FiltersTest do
     test "does not error when undefined filters are passed" do
       try do
         apply_filters(Post, filters: [is_not_defined: true])
+        refute true
       rescue
         Ecto.Filters.Exception ->
           assert true
@@ -89,6 +91,16 @@ defmodule Ecto.FiltersTest do
 
     test "comment body filter works" do
       assert %{wheres: [%{params: [{"test", :string}]}]} = apply_filters(Post, filters: [comment_body: "test"])
+    end
+
+    test "filter key must be string or atom" do
+      try do
+        apply_filters(Post, filters: %{'test' => "test"})
+        refute true
+      rescue
+        Ecto.Filters.Exception ->
+          assert true
+      end
     end
   end
 end
