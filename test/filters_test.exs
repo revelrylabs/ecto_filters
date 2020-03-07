@@ -21,8 +21,8 @@ defmodule Ecto.FiltersTest do
     end
   end
 
-
   filter(:title, &where(&1, title: ^&2))
+
   filter(:comment_body, fn query, value ->
     query
     |> join(:left, [p], c in assoc(p, :comments), as: :comments)
@@ -90,7 +90,8 @@ defmodule Ecto.FiltersTest do
     end
 
     test "comment body filter works" do
-      assert %{wheres: [%{params: [{"test", :string}]}]} = apply_filters(Post, filters: [comment_body: "test"])
+      assert %{wheres: [%{params: [{"test", :string}]}]} =
+               apply_filters(Post, filters: [comment_body: "test"])
     end
 
     test "filter key must be string or atom" do
