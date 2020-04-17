@@ -1,3 +1,10 @@
+[![Hex.pm](https://img.shields.io/hexpm/v/ecto_filters.svg)]()
+[![Hex.pm](https://img.shields.io/hexpm/dt/ecto_filters.svg)]()
+[![Hex.pm](https://img.shields.io/hexpm/dw/ecto_filters.svg)]()
+[![Hex.pm](https://img.shields.io/hexpm/dd/ecto_filters.svg)]()
+
+[![Travis](https://travis-ci.com/travis-ci/travis-web.svg?branch=master)]()
+
 # Ecto.Filters
 
 Provides a consistent way to compose ecto query expressions.
